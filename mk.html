@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Mata Kuliah ke Jadwal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Acme&family=Righteous&family=Rowdies:wght@300;400;700&family=Signika+Negative:wght@300..700&family=Viga&display=swap');
+
+        :root {
+            --primary-color: #007074;
+            --nav-height: 60px;
+            --nav-shadow: rgba(0, 0, 0, 0.1);
+            --side-nav-width: 250px;
+            --overlay-color: rgba(0,0,0,0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Signika Negative", sans-serif;
+            overflow-x: hidden;
+            background: white;
+            color: #333;
+        }
+
+        /* Navbar */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--nav-height);
+            background-color: var(--primary-color);
+            box-shadow: 0 2px 6px var(--nav-shadow);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: white;
+            z-index: 1100;
+            padding: 0 1rem;
+        }
+
+        .hamburger {
+            cursor: pointer;
+            width: 30px;
+            height: 22px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            z-index: 1201;
+        }
+
+        .hamburger span {
+            display: block;
+            height: 4px;
+            background: white;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger:hover span {
+            background: #FFB200;
+        }
+
+        .nav-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            user-select: none;
+        }
+
+        /* Side Navigation Panel */
+        .side-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--side-nav-width);
+            height: 100vh;
+            background-color: var(--primary-color);
+            box-shadow: 2px 0 12px rgba(0,0,0,0.3);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            z-index: 1200;
+            display: flex;
+            flex-direction: column;
+            padding-top: 10px;
+            align-items: center;
+        }
+
+        .side-nav.open {
+            transform: translateX(0);
+        }
+
+        .side-nav-header {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            padding: 10px 20px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            user-select: none;
+            width: 100%;
+            text-align: center;
+        }
+
+        .side-nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            user-select: none;
+            transition: background-color 0.2s ease;
+            width: 100%;
+            text-align: center;
+        }
+
+        .side-nav a:hover {
+            background-color: #005754;
+        }
+
+        /* Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--overlay-color);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+            z-index: 1190;
+        }
+
+        .overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Form Container */
+        .form-container {
+            max-width: 600px;
+            margin: 3rem auto;
+            background: #ffffff;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            color: #6b7280;
+            font-family: "Signika Negative", sans-serif;
+            margin-top: 100px; /* Adjust margin-top to clear the fixed navbar */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* Add a subtle shadow */
+            text-align: left; /* Align text within the form container to left */
+        }
+
+        /* Heading */
+        .form-container h1 {
+            font-size: 2.5rem; /* Adjusted for better fit */
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 2rem;
+            text-align: center; /* Center the heading */
+        }
+
+        /* Form Elements */
+        .mb-3 {
+            margin-bottom: 1.75rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #374151;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            color: #111827;
+            border: 1px solid #d1d5db;
+            border-radius: 0.75rem;
+            background-color: #f9fafb;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #007074;
+            box-shadow: 0 0 0 3px rgba(37, 235, 186, 0.3);
+            background-color: #ffffff;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.85rem 2rem;
+            font-size: 1.125rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: block; /* Make button full width */
+            margin: 0 auto; /* Center the button */
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.6);
+        }
+
+        .btn-primary:hover {
+            background-color: #005754;
+            transform: scale(1.03);
+        }
+
+        /* Alert styling */
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid transparent;
+            border-radius: 0.25rem;
+        }
+
+        .alert-success {
+            color: #0f5132;
+            background-color: #d1e7dd;
+            border-color: #badbcc;
+        }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 768px) {
+            .form-container {
+                margin: 1rem; /* Reduce margin on smaller screens */
+                padding: 1rem; /* Reduce padding on smaller screens */
+            }
+
+            .form-container h1 {
+                font-size: 2rem; /* Smaller heading on mobile */
+            }
+
+            .nav-text {
+                font-size: 1rem; /* Smaller nav text */
+            }
+
+            .side-nav {
+                width: 200px; /* Adjust side nav width */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hamburger {
+                width: 25px; /* Smaller hamburger icon */
+                height: 18px;
+            }
+
+            .hamburger span {
+                height: 3px; /* Smaller hamburger lines */
+            }
+
+            .form-container h1 {
+                font-size: 1.5rem; /* Even smaller heading */
+            }
+
+            .btn {
+                padding: 0.75rem 1.5rem; /* Smaller button padding */
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="hamburger" id="hamburger" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="nav-text">
+            Selamat datang!
+        </div>
+    </nav>
+
+    <div class="side-nav" id="sideNav" aria-hidden="true">
+        <div class="side-nav-header">Menu</div>
+        <a href="index.html">Home</a>
+        <a href="jadwal.html">Jadwal</a>
+        <a href="#">Download Absensi Dosen</a>
+        <a href="rekapdosen.html">Rekap Absensi Dosen</a>
+        <a href="mk.html">Tambah Mata Kuliah</a>
+        <a href="buat.html">Tambah Absensi Dosen</a>
+        <a href="buatmhs.html">Tambah Absensi Mahasiswa</a>
+        <a href="rekapmhs.html">Rekap Absensi Mahasiswa</a>
+        <a href="#">Logout</a>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+
+    <div class="form-container">
+        <h1>Tambah Mata Kuliah ke Jadwal</h1>
+        <form action="#" method="POST" onsubmit="event.preventDefault(); alert('Form submitted!');">
+            <div class="mb-3">
+                <label for="nama_dosen" class="form-label">Nama Dosen</label>
+                <input type="text" name="nama_dosen" class="form-control" required placeholder="Contoh: Prof. Budi Santoso">
+            </div>
+            <div class="mb-3">
+                <label for="nama_matkul" class="form-label">Nama Mata Kuliah</label>
+                <input type="text" name="nama_matkul" class="form-control" required placeholder="Contoh: Pemrograman Web 2">
+            </div>
+            <div class="mb-3">
+                <label for="hari" class="form-label">Hari</label>
+                <input type="text" name="hari" class="form-control" required placeholder="Contoh: Senin">
+            </div>
+            <div class="mb-3">
+                <label for="jam_mulai" class="form-label">Jam Mulai</label>
+                <input type="time" name="jam_mulai" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="jam_selesai" class="form-label">Jam Selesai</label>
+                <input type="time" name="jam_selesai" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="ruangan" class="form-label">Ruangan</label>
+                <input type="text" name="ruangan" class="form-control" required placeholder="Contoh: Lab Komputer 101">
+            </div>
+            <button type="submit" class="btn btn-primary">Tambah</button>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Hamburger menu and side-nav toggle logic
+        const hamburger = document.getElementById("hamburger");
+        const sideNav = document.getElementById("sideNav");
+        const overlay = document.getElementById("overlay");
+
+        function openSideNav() {
+            sideNav.classList.add("open");
+            overlay.classList.add("show");
+            hamburger.setAttribute("aria-expanded", "true");
+            sideNav.setAttribute("aria-hidden", "false");
+        }
+
+        function closeSideNav() {
+            sideNav.classList.remove("open");
+            overlay.classList.remove("show");
+            hamburger.setAttribute("aria-expanded", "false");
+            sideNav.setAttribute("aria-hidden", "true");
+        }
+
+        hamburger.addEventListener("click", () => {
+            if (sideNav.classList.contains("open")) {
+                closeSideNav();
+            } else {
+                openSideNav();
+            }
+        });
+
+        overlay.addEventListener("click", () => {
+            closeSideNav();
+        });
+
+        hamburger.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                if (sideNav.classList.contains("open")) {
+                    closeSideNav();
+                } else {
+                    openSideNav();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

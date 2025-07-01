@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jadwal Mata Kuliah</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Acme&family=Righteous&family=Rowdies:wght@300;400;700&family=Signika+Negative:wght@300..700&family=Viga&display=swap');
+
+        :root {
+            --primary-color: #007074;
+            --nav-height: 60px;
+            --nav-shadow: rgba(0, 0, 0, 0.1);
+            --side-nav-width: 250px;
+            --overlay-color: rgba(0,0,0,0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Signika Negative", sans-serif;
+            overflow-x: hidden;
+            background: white;
+            color: #333;
+            text-align: center;
+        }
+
+        /* Navbar */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--nav-height);
+            background-color: var(--primary-color);
+            box-shadow: 0 2px 6px var(--nav-shadow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            z-index: 1100;
+            padding: 0 1rem;
+        }
+
+        .hamburger {
+            cursor: pointer;
+            width: 30px;
+            height: 22px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: absolute;
+            left: 1rem;
+            z-index: 1201;
+        }
+
+        .hamburger span {
+            display: block;
+            height: 4px;
+            background: white;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger:hover span {
+            background: #FFB200;
+        }
+
+        .nav-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            user-select: none;
+        }
+
+        .side-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--side-nav-width);
+            height: 100vh;
+            background-color: var(--primary-color);
+            box-shadow: 2px 0 12px rgba(0,0,0,0.3);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            z-index: 1200;
+            display: flex;
+            flex-direction: column;
+            padding-top: 10px;
+            align-items: center;
+        }
+
+        .side-nav.open {
+            transform: translateX(0);
+        }
+
+        .side-nav-header {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            padding: 10px 20px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            user-select: none;
+            width: 100%;
+            text-align: center;
+        }
+
+        .side-nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            user-select: none;
+            transition: background-color 0.2s ease;
+            width: 100%;
+            text-align: center;
+        }
+
+        .side-nav a:hover {
+            background-color: #005754;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--overlay-color);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+            z-index: 1190;
+        }
+
+        .overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 80px;
+            color: #333;
+        }
+
+        table {
+            width: 98%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            margin-left: 12px;
+            text-align: center;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #0ABAB5;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .nav-text {
+                font-size: 1rem;
+            }
+
+            .side-nav {
+                width: 200px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            table {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hamburger {
+                width: 25px;
+                height: 18px;
+            }
+
+            .hamburger span {
+                height: 3px;
+            }
+
+            .nav-text {
+                font-size: 0.9rem;
+            }
+
+            h1 {
+                font-size: 1.2rem;
+            }
+
+            table {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="hamburger" id="hamburger" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="nav-text">
+            Selamat datang!
+        </div>
+    </nav>
+
+    <div class="side-nav" id="sideNav" aria-hidden="true">
+        <div class="side-nav-header">Menu</div>
+        <a href="index.html">Home</a>
+        <a href="jadwal.html">Jadwal</a>
+        <a href="#">Download Absensi Dosen</a>
+        <a href="rekapdosen.html">Rekap Absensi Dosen</a>
+        <a href="mk.html">Tambah Mata Kuliah</a>
+        <a href="buat.html">Tambah Absensi Dosen</a>
+        <a href="buatmhs.html">Tambah Absensi Mahasiswa</a>
+        <a href="rekapmhs.html">Rekap Absensi Mahasiswa</a>
+        <a href="#">Logout</a>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+
+    <h1>Jadwal Mata Kuliah</h1>
+
+    <table id="jadwalTable" class="display">
+        <thead>
+            <tr>
+                <th>Nama Mata Kuliah</th>
+                <th>Nama Dosen</th>
+                <th>Hari</th>
+                <th>Jam Mulai</th>
+                <th>Jam Selesai</th>
+                <th>Ruangan</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Pemrograman Web 2</td>
+                <td>Prof. Budi Santoso</td>
+                <td>Senin</td>
+                <td>08:00</td>
+                <td>09:40</td>
+                <td>Lab Komputer 1</td>
+            </tr>
+            <tr>
+                <td>Artificial Intelligence</td>
+                <td>Dr. Citra Dewi</td>
+                <td>Selasa</td>
+                <td>10:00</td>
+                <td>11:40</td>
+                <td>Ruang Kuliah 301</td>
+            </tr>
+            <tr>
+                <td>Jaringan Komputer</td>
+                <td>Ir. Ahmad Junaidi</td>
+                <td>Rabu</td>
+                <td>13:00</td>
+                <td>14:40</td>
+                <td>Lab Jaringan</td>
+            </tr>
+            <tr>
+                <td>Aljabar Linier dan Matriks</td>
+                <td>Dr. Sari Murniati</td>
+                <td>Kamis</td>
+                <td>09:00</td>
+                <td>10:40</td>
+                <td>Ruang Kelas A</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+    <script>
+        const hamburger = document.getElementById("hamburger");
+        const sideNav = document.getElementById("sideNav");
+        const overlay = document.getElementById("overlay");
+
+        function openSideNav() {
+            sideNav.classList.add("open");
+            overlay.classList.add("show");
+            hamburger.setAttribute("aria-expanded", "true");
+            sideNav.setAttribute("aria-hidden", "false");
+        }
+
+        function closeSideNav() {
+            sideNav.classList.remove("open");
+            overlay.classList.remove("show");
+            hamburger.setAttribute("aria-expanded", "false");
+            sideNav.setAttribute("aria-hidden", "true");
+        }
+
+        hamburger.addEventListener("click", () => {
+            if (sideNav.classList.contains("open")) {
+                closeSideNav();
+            } else {
+                openSideNav();
+            }
+        });
+
+        overlay.addEventListener("click", () => {
+            closeSideNav();
+        });
+
+        hamburger.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                if (sideNav.classList.contains("open")) {
+                    closeSideNav();
+                } else {
+                    openSideNav();
+                }
+            }
+        });
+
+        $(document).ready(function() {
+            $('#jadwalTable').DataTable();
+        });
+    </script>
+</body>
+</html>

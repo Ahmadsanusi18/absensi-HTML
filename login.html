@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <style>
+        /* Import Font (optional, use if needed) */
+        @import url('https://fonts.googleapis.com/css2?family=Signika+Negative:wght@300..700&display=swap');
+
+        body {
+            font-family: "Signika Negative", sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #333;
+            background:
+              linear-gradient(rgba(26, 16, 16, 0), rgba(46, 44, 44, 0)),
+              url('img/dor.gif');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center center;
+            line-height: 1.6;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 2.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #1a202c;
+            margin-bottom: 2rem;
+            font-size: 2.25rem;
+            font-weight: 700;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            text-align: left;
+            margin-bottom: 0.5rem;
+            color: #4a5568;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            padding: 0.85rem 1rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #cbd5e0;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            color: #2d3748;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #007074;
+            box-shadow: 0 0 0 3px rgba(0, 112, 116, 0.2);
+        }
+
+          .register-button {
+    display: inline-block;
+    padding: 10px 16px; /* px-4 py-2 */
+    background-color: #007074;
+    color: white;
+    border-radius: 0.25rem; /* rounded */
+    transition: background-color 200ms; /* transition duration-200 */
+  }
+
+  .register-button:hover {
+    background-color: #005A5E;
+  }
+
+        .login-prompt {
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: #718096;
+        }
+
+        .login-prompt a {
+            color: #007074;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-prompt a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.75rem;
+            }
+
+            .container {
+                padding: 1.5rem;
+            }
+
+            input[type="email"],
+            input[type="password"] {
+                font-size: 0.9rem;
+            }
+
+            button[type="submit"] {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Login</h1>
+
+        <form action="#" method="POST" onsubmit="alert('Login form submitted!'); return false;">
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" >
+
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" >
+            
+            <p class="login-prompt">Belum Punya Akun? <a href="register.html">Register</a></p>
+            
+            <a href="index.html" class="register-button">
+                Login
+            </a>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</body>
+</html>

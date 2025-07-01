@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Absensi Mahasiswa</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Acme&family=Righteous&family=Rowdies:wght@300;400;700&family=Signika+Negative:wght@300..700&family=Viga&display=swap');
+
+        :root {
+            --primary-color: #007074;
+            --nav-height: 60px;
+            --nav-shadow: rgba(0, 0, 0, 0.1);
+            --side-nav-width: 250px;
+            --overlay-color: rgba(0,0,0,0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Signika Negative", sans-serif;
+            overflow-x: hidden;
+            background: white;
+            color: #333;
+        }
+
+        /* Navbar */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--nav-height);
+            background-color: var(--primary-color);
+            box-shadow: 0 2px 6px var(--nav-shadow);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: white;
+            z-index: 1100;
+            padding: 0 1rem;
+        }
+
+        .hamburger {
+            cursor: pointer;
+            width: 30px;
+            height: 22px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            z-index: 1201;
+        }
+
+        .hamburger span {
+            display: block;
+            height: 4px;
+            background: white;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            user-select: none;
+        }
+
+        /* Side Navigation Panel */
+        .side-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--side-nav-width);
+            height: 100vh;
+            background-color: var(--primary-color);
+            box-shadow: 2px 0 12px rgba(0,0,0,0.3);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            z-index: 1200;
+            display: flex;
+            flex-direction: column;
+            padding-top: 10px;
+            align-items: center;
+        }
+
+        .side-nav.open {
+            transform: translateX(0);
+        }
+
+        .side-nav-header {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            padding: 10px 20px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            user-select: none;
+            width: 100%;
+            text-align: center;
+        }
+
+        .side-nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            user-select: none;
+            transition: background-color 0.2s ease;
+            width: 100%;
+            text-align: center;
+        }
+
+        .side-nav a:hover {
+            background-color: #005754;
+        }
+
+        /* Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--overlay-color);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+            z-index: 1190;
+        }
+
+        .overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Form Container */
+        .form-container-wrapper {
+            max-width: 600px;
+            margin: 3rem auto;
+            background: #ffffff;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            color: #6b7280;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: left;
+            margin-top: 100px; /* Adjust margin-top to clear the fixed navbar */
+        }
+
+        /* Heading */
+        .form-container-wrapper h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        /* Form Elements */
+        .mb-3 {
+            margin-bottom: 1.75rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #374151;
+        }
+
+        .form-select, .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            color: #111827;
+            border: 1px solid #d1d5db;
+            border-radius: 0.75rem;
+            background-color: #f9fafb;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-select:focus, .form-control:focus {
+            outline: none;
+            border-color: #007074;
+            box-shadow: 0 0 0 3px rgba(37, 235, 186, 0.3);
+            background-color: #ffffff;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.85rem 2rem;
+            font-size: 1.125rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: inline-block;
+            margin-right: 1rem;
+        }
+
+        .btn-success {
+            background-color: #007074;
+            color: white;
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.6);
+        }
+
+        .btn-success:hover {
+            background-color: #005754;
+            transform: scale(1.03);
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+            box-shadow: 0 2px 6px rgba(108, 117, 125, 0.6);
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            transform: scale(1.03);
+        }
+
+        .text-danger {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .form-container-wrapper {
+                margin: 1rem;
+                padding: 1rem;
+            }
+
+            .form-container-wrapper h2 {
+                font-size: 2rem;
+            }
+
+            .btn {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-text {
+                font-size: 1rem;
+            }
+
+            .hamburger {
+                width: 25px;
+                height: 18px;
+            }
+
+            .hamburger span {
+                height: 3px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="hamburger" id="hamburger" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="nav-text">Selamat datang!</div>
+    </nav>
+
+    <div class="side-nav" id="sideNav" aria-hidden="true">
+        <div class="side-nav-header">Menu</div>
+        <a href="index.html">Home</a>
+        <a href="jadwal.html">Jadwal</a>
+        <a href="#">Download Absensi Dosen</a>
+        <a href="rekapdosen.html">Rekap Absensi Dosen</a>
+        <a href="mk.html">Tambah Mata Kuliah</a>
+        <a href="buat.html">Tambah Absensi Dosen</a>
+        <a href="buatmhs.html">Tambah Absensi Mahasiswa</a>
+        <a href="rekapmhs.html">Rekap Absensi Mahasiswa</a>
+        <a href="#">Logout</a>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+
+    <div class="form-container-wrapper">
+        <h2>Tambah Data Absensi</h2>
+
+        <form action="#" method="POST" onsubmit="event.preventDefault(); showSuccessAlert();">
+            <div class="mb-3">
+                <label for="user_id" class="form-label">Nama Mahasiswa</label>
+                <select name="user_id" id="user_id" class="form-select" required>
+                    <option value="">Pilih Mahasiswa</option>
+                    <option value="1">Mahasiswa A (12345)</option>
+                    <option value="2">Mahasiswa B (67890)</option>
+                    <option value="3">Mahasiswa C (11223)</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="jadwal_id" class="form-label">Mata Kuliah</label>
+                <select name="jadwal_id" id="jadwal_id" class="form-select" required>
+                    <option value="">Pilih Mata Kuliah</option>
+                    <option value="1">Pemrograman Web 2 (Senin 08:00 - 09:40)</option>
+                    <option value="2">Artificial Intelligence (Selasa 10:00 - 11:40)</option>
+                    <option value="3">Jaringan Komputer (Rabu 13:00 - 14:40)</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="status" class="form-label">Status Kehadiran</label>
+                <select name="status" id="status" class="form-select" required>
+                    <option value="">Pilih Status</option>
+                    <option value="Hadir">Hadir</option>
+                    <option value="Alpha">Alpha</option>
+                    <option value="Izin">Izin</option>
+                    <option value="Sakit">Sakit</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn btn-success">Simpan</button>
+            <a href="#" class="btn btn-secondary">Kembali</a>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        const hamburger = document.getElementById("hamburger");
+        const sideNav = document.getElementById("sideNav");
+        const overlay = document.getElementById("overlay");
+
+        function openSideNav() {
+            sideNav.classList.add("open");
+            overlay.classList.add("show");
+            hamburger.setAttribute("aria-expanded", "true");
+            sideNav.setAttribute("aria-hidden", "false");
+        }
+
+        function closeSideNav() {
+            sideNav.classList.remove("open");
+            overlay.classList.remove("show");
+            hamburger.setAttribute("aria-expanded", "false");
+            sideNav.setAttribute("aria-hidden", "true");
+        }
+
+        hamburger.addEventListener("click", () => {
+            if (sideNav.classList.contains("open")) {
+                closeSideNav();
+            } else {
+                openSideNav();
+            }
+        });
+
+        overlay.addEventListener("click", () => {
+            closeSideNav();
+        });
+
+        hamburger.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                if (sideNav.classList.contains("open")) {
+                    closeSideNav();
+                } else {
+                    openSideNav();
+                }
+            }
+        });
+
+        function showSuccessAlert() {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 1500,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+
+            Toast.fire({
+                icon: 'success',
+                title: 'Data absensi berhasil disimpan!'
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <title>Website Absensi Perkuliahan</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Acme&family=Righteous&family=Rowdies:wght@300;400;700&family=Signika+Negative:wght@300..700&family=Viga&display=swap');
+
+        :root {
+            --primary-color: #007074;
+            --nav-height: 60px;
+            --nav-shadow: rgba(0, 0, 0, 0.1);
+            --side-nav-width: 250px;
+            --overlay-color: rgba(0,0,0,0.4);
+        }
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            font-family: "Signika Negative", sans-serif;
+            overflow-x: hidden;
+            background: white; /* default background putih */
+            color: #333; /* teks gelap default */
+        }
+        /* Navbar */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--nav-height);
+            background-color: var(--primary-color);
+            box-shadow: 0 2px 6px var(--nav-shadow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            z-index: 1100;
+            padding: 0 1rem;
+        }
+        /* Hamburger container remains left aligned */
+        .hamburger {
+            cursor: pointer;
+            width: 30px;
+            height: 22px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: absolute;
+            left: 1rem;
+            z-index: 1201;
+        }
+        /* Hamburger lines */
+        .hamburger span {
+            display: block;
+            height: 4px;
+            background: white;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+        .hamburger:hover span {
+            background: #FFB200;
+        }
+        /* Centered navbar text */
+        .nav-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            user-select: none;
+        }
+        /* Side navigation panel */
+        .side-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--side-nav-width);
+            height: 100vh;
+            background-color: var(--primary-color);
+            box-shadow: 2px 0 12px rgba(0,0,0,0.3);
+            transform: translateX(-100%);
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1); /* smoother easing */
+            z-index: 1200;
+            display: flex;
+            flex-direction: column;
+            padding-top: 10px;
+            align-items: center;
+        }
+        .side-nav.open {
+            transform: translateX(0);
+        }
+        /* Side nav header title */
+        .side-nav-header {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            padding: 10px 20px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            user-select: none;
+            width: 100%;
+            text-align: center;
+        }
+        /* Side nav links */
+        .side-nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            user-select: none;
+            transition: background-color 0.2s ease;
+            width: 100%;
+            text-align: center;
+        }
+        .side-nav a:hover {
+            background-color: #005754;
+        }
+        /* Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--overlay-color);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1190;
+        }
+        .overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Section hero with background image */
+        .hero-section {
+            background:
+                linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0,0,0,0)),
+                url('img/ufnew.jpg'); /* Ensure this path is correct */
+            background-size: cover;
+            background-position: center bottom;
+            color: white;
+            padding: 6rem 1rem 4rem; /* add space from navbar */
+            min-height: 100vh;
+            text-align: center;
+        }
+        .hero-section img {
+            width: 250px;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+            margin: 0 auto 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .hero-section p.photo-text {
+            font-size: 1.1rem;
+            color: #ddd;
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+        .hero-section h1 {
+            font-weight: 900;
+            font-family: "Signika Negative", sans-serif;
+            font-size: 50px;
+            color:#FFB200;
+            margin-bottom: 0.5rem;
+        }
+        .hero-section p {
+            margin-top: 0;
+            font-size: 1.25rem;
+        }
+
+        /* Contact section with white background */
+        .contact-section {
+            background-color: white;
+            color: #333;
+            padding: 4rem 1rem;
+            max-width: 900px;
+            margin: 0 auto 3rem;
+            text-align: center;
+            height:330px;
+            border-radius: 8px;
+        }
+        .contact-section h2 {
+            font-size: 2rem;
+            margin-top: -50px;
+        }
+        .contact-section p {
+            font-size: 1.1rem;
+            margin: 0.3rem 0;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--primary-color);
+            color: #FFB200;
+            text-align: center;
+            padding: 1.5rem 1rem;
+            font-size: 1rem;
+            user-select: none;
+        }
+
+        /* Nav buttons on top right */
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .nav-buttons {
+            position: absolute;
+            right: 1rem;
+            display: flex;
+            gap: 10px;
+        }
+        .btn-login,
+        .btn-register {
+            padding: 6px 12px;
+            background-color: transparent;
+            color: white;
+            border: 2px solid white;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .btn-login:hover,
+        .btn-register:hover {
+            background-color: #FFB200;
+            color: #000;
+        }
+        .social-boxes {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .social-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100px;
+            padding: 1rem;
+            background-color: #f2f2f2;
+            border-radius: 10px;
+            text-decoration: none;
+            color: inherit;
+            user-select: none;
+        }
+
+        .social-box:hover,
+        .social-box:focus {
+            background-color: #FFB200;
+            color: #000;
+            box-shadow: 0 4px 12px rgba(255, 178, 0, 0.6);
+            outline: none;
+        }
+
+        .social-box svg {
+            margin-bottom: 0.5rem;
+        }
+
+        .social-box span {
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+        #contact {
+            background: white;
+            color: #333;
+            padding: 3rem 1rem;
+            max-width: 900px;
+            margin: 2rem auto;
+            margin-top: 5px;
+            border-radius: 8px;
+        }
+
+        #contact h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-family: "Signika Negative", sans-serif;
+            color: var(--primary-color);
+        }
+
+        .social-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .social-box {
+            color: white;
+            flex: 1 1 140px;
+            max-width: 160px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            transition: background-color 0.3s ease;
+        }
+
+        .social-box i {
+            font-size: 3rem;
+            margin-bottom: 0.75rem;
+        }
+
+        /* Instagram */
+        .social-box.instagram {
+            background-color: #fce7f3; /* subtle pink pastel */
+            color: #9d174d; /* rich muted pink */
+        }
+        .social-box.instagram:hover {
+            background-color: #fbcfe8;
+            color: #831843;
+            box-shadow: 0 4px 12px rgba(157, 23, 77, 0.3);
+        }
+
+        /* WhatsApp */
+        .social-box.whatsapp {
+            background-color: #dcfce7; /* soft green pastel */
+            color: #166534; /* muted dark green */
+        }
+        .social-box.whatsapp:hover {
+            background-color: #bbf7d0;
+            color: #134e4a;
+            box-shadow: 0 4px 12px rgba(22, 101, 52, 0.3);
+        }
+
+        /* LinkedIn */
+        .social-box.linkedin {
+            background-color: #dbeafe; /* soft blue pastel */
+            color: #1e40af; /* muted dark blue */
+        }
+        .social-box.linkedin:hover {
+            background-color: #bfdbfe;
+            color: #1e3a8a;
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+        }
+
+        /* TikTok */
+        .social-box.tiktok {
+            background-color: #e0e7ff; /* soft indigo pastel */
+            color: #000000; /* muted dark indigo */
+        }
+        .social-box.tiktok:hover {
+            background-color: #9b9b9b;
+            color: #000000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        /* GitHub */
+        .social-box.github {
+            background-color: #f3f4f6; /* light gray pastel */
+            color: #111827; /* almost black */
+        }
+        .social-box.github:hover {
+            background-color: #e5e7eb;
+            box-shadow: 0 4px 12px rgba(17, 24, 39, 0.3);
+        }
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .fade-in-up.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+<nav>
+    <div class="hamburger" aria-label="Open navigation menu" role="button" tabindex="0" id="hamburger" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+    <div class="nav-text">
+        Selamat datang!
+    </div>
+    <div class="nav-buttons">
+        <a href="login.html" class="btn-login">Login</a>
+        
+    </div>
+</nav>
+
+<div class="side-nav" id="sideNav" aria-hidden="true">
+    <div class="side-nav-header">Menu</div>
+    <a href="index.html">Home</a>
+        <a href="jadwal.html">Jadwal</a>
+        <a href="#">Download Absensi Dosen</a>
+        <a href="rekapdosen.html">Rekap Absensi Dosen</a>
+        <a href="mk.html">Tambah Mata Kuliah</a>
+        <a href="buat.html">Tambah Absensi Dosen</a>
+        <a href="buatmhs.html">Tambah Absensi Mahasiswa</a>
+        <a href="rekapmhs.html">Rekap Absensi Mahasiswa</a>
+        <a href="#">Logout</a>
+</div>
+
+<div class="overlay" id="overlay" tabindex="-1"></div>
+
+<main>
+    <section class="hero-section" aria-label="Section utama">
+        <img src="img/logo.png" alt="Logo Universitas Faletehan" />
+        <p class="photo-text">Universitas Faletehan</p>
+        <h1>Website Absensi Perkuliahan</h1>
+        <p>Website Absensi Dosen dan Mahasiswa Universitas Faletehan</p>
+    </section>
+
+    <section class="contact-section fade-in-up" aria-label="Informasi Kontak">
+        <h2>Kontak Kami</h2>
+        <p>Email: sanusiahmdad@gmail.com</p>
+        <p>Telepon: +62 858 7127 8874</p>
+        <p>Alamat: Kepoooooooooo</p>
+    </section>
+
+    <section id="contact" class="fade-in-up" aria-label="Kontak Kami">
+        <div class="social-container">
+            <a href="https://instagram.com/a.saan_" target="_blank" rel="noopener" class="social-box instagram" aria-label="Instagram">
+                <i class="fab fa-instagram"></i>
+                <span>Instagram</span>
+            </a>
+            <a href="https://wa.me/085871278874" target="_blank" rel="noopener" class="social-box whatsapp" aria-label="WhatsApp">
+                <i class="fab fa-whatsapp"></i>
+                <span>WhatsApp</span>
+            </a>
+            <a href="https://linkedin.com/in/ahmad-sanusi18" target="_blank" rel="noopener" class="social-box linkedin" aria-label="LinkedIn">
+                <i class="fab fa-linkedin"></i>
+                <span>LinkedIn</span>
+            </a>
+            <a href="https://tiktok.com/@saanzzz_" target="_blank" rel="noopener" class="social-box tiktok" aria-label="TikTok">
+                <i class="fab fa-tiktok"></i>
+                <span>TikTok</span>
+            </a>
+            <a href="https://github.com/Ahmadsanusi18" target="_blank" rel="noopener" class="social-box github" aria-label="GitHub">
+                <i class="fab fa-github"></i>
+                <span>GitHub</span>
+            </a>
+        </div>
+    </section>
+</main>
+
+<footer>
+    &copy; 2025 Ahmad Sanusi. All rights reserved.
+</footer>
+
+<script>
+    const hamburger = document.getElementById("hamburger");
+    const sideNav = document.getElementById("sideNav");
+    const overlay = document.getElementById("overlay");
+
+    function openSideNav() {
+        sideNav.classList.add("open");
+        overlay.classList.add("show");
+        hamburger.setAttribute("aria-expanded", "true");
+        sideNav.setAttribute("aria-hidden", "false");
+    }
+
+    function closeSideNav() {
+        sideNav.classList.remove("open");
+        overlay.classList.remove("show");
+        hamburger.setAttribute("aria-expanded", "false");
+        sideNav.setAttribute("aria-hidden", "true");
+    }
+
+    hamburger.addEventListener("click", () => {
+        if (sideNav.classList.contains("open")) {
+            closeSideNav();
+        } else {
+            openSideNav();
+        }
+    });
+
+    overlay.addEventListener("click", () => {
+        closeSideNav();
+    });
+
+    hamburger.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            if (sideNav.classList.contains("open")) {
+                closeSideNav();
+            } else {
+                openSideNav();
+            }
+        }
+    });
+
+    function animateOnScroll() {
+        const elements = document.querySelectorAll('.fade-in-up');
+        const windowHeight = window.innerHeight;
+
+        elements.forEach(el => {
+            const elementTop = el.getBoundingClientRect().top;
+
+            if (elementTop < windowHeight - 100) { // appears before exactly at the bottom viewport
+                el.classList.add('show');
+            }
+        });
+    }
+
+    // Run when page loads and when scrolled
+    window.addEventListener('scroll', animateOnScroll);
+    window.addEventListener('load', animateOnScroll);
+</script>
+</body>
+</html>

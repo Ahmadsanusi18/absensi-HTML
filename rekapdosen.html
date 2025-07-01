@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absensi Dosen - Mad Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Acme&family=Righteous&family=Rowdies:wght@300;400;700&family=Signika+Negative:wght@300..700&family=Viga&display=swap');
+
+        :root {
+            --primary-color: #007074;
+            --nav-height: 60px;
+            --nav-shadow: rgba(0, 0, 0, 0.1);
+            --side-nav-width: 250px;
+            --overlay-color: rgba(0,0,0,0.4);
+        }
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            font-family: "Signika Negative", sans-serif;
+            overflow-x: hidden;
+            background: white;
+            color: #333;
+        }
+        /* Navbar */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--nav-height);
+            background-color: var(--primary-color);
+            box-shadow: 0 2px 6px var(--nav-shadow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            z-index: 1100;
+            padding: 0 1rem;
+        }
+        .hamburger {
+            cursor: pointer;
+            width: 30px;
+            height: 22px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: absolute;
+            left: 1rem;
+            z-index: 1201;
+        }
+        .hamburger span {
+            display: block;
+            height: 4px;
+            background: white;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+        .hamburger:hover span {
+            background: #FFB200;
+        }
+        .nav-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            user-select: none;
+        }
+        /* Side Navigation Panel */
+        .side-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--side-nav-width);
+            height: 100vh;
+            background-color: var(--primary-color);
+            box-shadow: 2px 0 12px rgba(0,0,0,0.3);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            z-index: 1200;
+            display: flex;
+            flex-direction: column;
+            padding-top: 10px;
+            align-items: center;
+        }
+        .side-nav.open {
+            transform: translateX(0);
+        }
+        .side-nav-header {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            padding: 10px 20px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            user-select: none;
+            width: 100%;
+            text-align: center;
+        }
+        .side-nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            user-select: none;
+            transition: background-color 0.2s ease;
+            width: 100%;
+            text-align: center;
+        }
+        .side-nav a:hover {
+            background-color: #005754;
+        }
+        /* Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--overlay-color);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+            z-index: 1190;
+        }
+        .overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Container for main content */
+        .main-content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #ffffff;
+            color: #6b7280;
+            font-family: "Signika Negative", sans-serif;
+            border-radius: 0.5rem;
+            padding: 20px; /* Added padding */
+            padding-top: 80px; /* Adjusted padding-top to clear fixed navbar */
+        }
+
+        table {
+            width: 100%;
+            border-spacing: 0;
+            background: #f9fafb;
+            overflow: hidden;
+            border-radius: 0.5rem; /* Added border-radius to table */
+        }
+
+        /* Heading */
+        h1 {
+            font-size: 40px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 1.5rem;
+            text-align: center; /* Center the heading */
+        }
+
+        /* Add Button */
+        .add-btn {
+            display: inline-block;
+            background-color: #007074;
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 0.75rem;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .add-btn:hover {
+            background-color: #005754; /* Darker primary color on hover */
+            transform: scale(1.05);
+        }
+
+        thead {
+            background: #e5e7eb;
+            color: #374151;
+            font-weight: 600;
+        }
+
+        th, td {
+            padding: 1rem 1.25rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        tbody tr:hover {
+            background-color: #f3f4f6;
+            transition: background-color 0.3s;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Action Buttons */
+        .action-btn {
+            display: inline-block;
+            padding: 0.4rem 0.7rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            text-decoration: none;
+            color: white;
+            font-size: 0.9rem;
+            transition: background-color 0.3s, transform 0.3s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .action-btn.edit-btn {
+            background-color: #3b82f6;
+        }
+
+        .action-btn.edit-btn:hover {
+            background-color: #2563eb;
+        }
+
+        .action-btn.delete-btn {
+            background-color: #ef4444;
+        }
+
+        .action-btn.delete-btn:hover {
+            background-color: #dc2626;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="hamburger" id="hamburger" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="nav-text">
+            Selamat datang!
+        </div>
+    </nav>
+
+    <div class="side-nav" id="sideNav" aria-hidden="true">
+        <div class="side-nav-header">Menu</div>
+        <a href="index.html">Home</a>
+        <a href="jadwal.html">Jadwal</a>
+        <a href="#">Download Absensi Dosen</a>
+        <a href="rekapdosen.html">Rekap Absensi Dosen</a>
+        <a href="mk.html">Tambah Mata Kuliah</a>
+        <a href="buat.html">Tambah Absensi Dosen</a>
+        <a href="buatmhs.html">Tambah Absensi Mahasiswa</a>
+        <a href="rekapmhs.html">Rekap Absensi Mahasiswa</a>
+        <a href="#">Logout</a>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+
+    <div class="main-content-container">
+        <h1>Absensi Dosen</h1>
+        <!-- This button is conditional in Blade, but always shown in static HTML for demo -->
+        <a href="#" class="add-btn">Tambah Absensi Dosen</a>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama Mata Kuliah</th>
+                    <th>Nama Dosen</th>
+                    <th>Hari</th>
+                    <th>Jam Mulai</th>
+                    <th>Jam Selesai</th>
+                    <th style="width: 140px;">Tanggal</th>
+                    <th style="width: 150px;">Status</th>
+                    <!-- This column is conditional in Blade, but always shown in static HTML for demo -->
+                    <th style="width: 160px;">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Static Data for Demonstration -->
+                <tr>
+                    <td>1</td>
+                    <td>Pemrograman Web 2</td>
+                    <td>Prof. Budi Santoso</td>
+                    <td>Senin</td>
+                    <td>08:00</td>
+                    <td>09:40</td>
+                    <td>2025-07-01</td>
+                    <td>
+                        <span class="status-badge" style="background-color: #22c55e;">Hadir</span>
+                    </td>
+                    <td>
+                        <a href="#" class="action-btn edit-btn" onclick="alert('Edit Absensi ID 1'); return false;">Edit</a>
+                        <form id="deleteForm-1" action="#" method="POST" style="display:inline-block;">
+                            <!-- @csrf and @method('DELETE') removed for static HTML -->
+                            <button type="button" class="action-btn delete-btn" onclick="confirmDelete(1)">
+                                Hapus
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Artificial Intelligence</td>
+                    <td>Dr. Citra Dewi</td>
+                    <td>Selasa</td>
+                    <td>10:00</td>
+                    <td>11:40</td>
+                    <td>2025-07-02</td>
+                    <td>
+                        <span class="status-badge" style="background-color: #ef4444;">Tidak Hadir</span>
+                    </td>
+                    <td>
+                        <a href="#" class="action-btn edit-btn" onclick="alert('Edit Absensi ID 2'); return false;">Edit</a>
+                        <form id="deleteForm-2" action="#" method="POST" style="display:inline-block;">
+                            <button type="button" class="action-btn delete-btn" onclick="confirmDelete(2)">
+                                Hapus
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Jaringan Komputer</td>
+                    <td>Ir. Ahmad Junaidi</td>
+                    <td>Rabu</td>
+                    <td>13:00</td>
+                    <td>14:40</td>
+                    <td>2025-07-03</td>
+                    <td>
+                        <span class="status-badge" style="background-color: #22c55e;">Hadir</span>
+                    </td>
+                    <td>
+                        <a href="#" class="action-btn edit-btn" onclick="alert('Edit Absensi ID 3'); return false;">Edit</a>
+                        <form id="deleteForm-3" action="#" method="POST" style="display:inline-block;">
+                            <button type="button" class="action-btn delete-btn" onclick="confirmDelete(3)">
+                                Hapus
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                <!-- No data row, for demonstration -->
+                <!-- <tr><td colspan="9" style="text-align:center; padding:2rem;">Data absensi dosen belum tersedia.</td></tr> -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Hamburger menu and side-nav toggle logic
+        const hamburger = document.getElementById("hamburger");
+        const sideNav = document.getElementById("sideNav");
+        const overlay = document.getElementById("overlay");
+
+        function openSideNav() {
+            sideNav.classList.add("open");
+            overlay.classList.add("show");
+            hamburger.setAttribute("aria-expanded", "true");
+            sideNav.setAttribute("aria-hidden", "false");
+        }
+
+        function closeSideNav() {
+            sideNav.classList.remove("open");
+            overlay.classList.remove("show");
+            hamburger.setAttribute("aria-expanded", "false");
+            sideNav.setAttribute("aria-hidden", "true");
+        }
+
+        hamburger.addEventListener("click", () => {
+            if (sideNav.classList.contains("open")) {
+                closeSideNav();
+            } else {
+                openSideNav();
+            }
+        });
+
+        overlay.addEventListener("click", () => {
+            closeSideNav();
+        });
+
+        hamburger.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                if (sideNav.classList.contains("open")) {
+                    closeSideNav();
+                } else {
+                    openSideNav();
+                }
+            }
+        });
+
+        // SweetAlert2 confirmation for delete (simulated)
+        function confirmDelete(absenId) {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: "bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mx-1",
+                    cancelButton: "bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mx-1"
+                },
+                buttonsStyling: false
+            });
+
+            swalWithBootstrapButtons.fire({
+                title: "Apakah Anda yakin?",
+                text: "Data ini akan dihapus secara permanen!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Ya, hapus!",
+                cancelButtonText: "Batal",
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Simulate form submission or API call
+                    console.log('Simulating delete for Absensi ID:', absenId);
+                    // In a real application, you would do:
+                    // document.getElementById('deleteForm-' + absenId).submit();
+                    swalWithBootstrapButtons.fire({
+                        title: "Dihapus!",
+                        text: "Data telah dihapus (simulasi).",
+                        icon: "success"
+                    });
+                    // Optionally, remove the row from the table if successful
+                    const row = document.querySelector(`#deleteForm-${absenId}`).closest('tr');
+                    if (row) {
+                        row.remove();
+                    }
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    swalWithBootstrapButtons.fire({
+                        title: "Dibatalkan",
+                        text: "Data Anda aman :)",
+                        icon: "error"
+                    });
+                }
+            });
+        }
+    </script>
+</body>
+</html>

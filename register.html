@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register User</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        /* Import Font (optional, use if needed) */
+        @import url('https://fonts.googleapis.com/css2?family=Signika+Negative:wght@300..700&display=swap');
+
+        body {
+            font-family: "Signika Negative", sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #333;
+            padding: 20px; /* Add some padding for smaller screens */
+            box-sizing: border-box;
+            background:
+              linear-gradient(rgba(26, 16, 16, 0), rgba(46, 44, 44, 0)),
+              url('img/dor.gif');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center center;
+            line-height: 1.6;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 2.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px; /* Adjusted max-width for two columns */
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            color: #1a202c;
+            margin-bottom: 2rem;
+            font-size: 2.25rem;
+            font-weight: 700;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-columns {
+            display: flex;
+            gap: 2rem; /* Space between columns */
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap; /* Allow columns to wrap on smaller screens */
+        }
+
+        .column-left,
+        .column-right {
+            flex: 1; /* Distribute space equally */
+            min-width: 280px; /* Minimum width for columns before wrapping */
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            text-align: left;
+            margin-bottom: 0.5rem;
+            color: #4a5568;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: block; /* Ensure label takes full width */
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        select {
+            padding: 0.85rem 1rem;
+            margin-bottom: 1.5rem; /* Space between input fields */
+            border: 1px solid #cbd5e0;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            color: #2d3748;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            width: 100%; /* Ensure inputs take full width of their column */
+            box-sizing: border-box; /* Include padding/border in element's total width */
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #007074;
+            box-shadow: 0 0 0 3px rgba(0, 112, 116, 0.2);
+        }
+
+          .register-button {
+    display: inline-block;
+    padding: 10px 16px; /* px-4 py-2 */
+    background-color: #007074;
+    color: white;
+    border-radius: 0.25rem; /* rounded */
+    transition: background-color 200ms; /* transition duration-200 */
+  }
+
+  .register-button:hover {
+    background-color: #005A5E;
+  }
+        .login-prompt {
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: #718096;
+        }
+
+        .login-prompt a {
+            color: #007074;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-prompt a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .form-columns {
+                flex-direction: column;
+                gap: 0; /* Remove gap when stacked */
+            }
+            .column-left,
+            .column-right {
+                min-width: unset; /* Remove min-width restriction */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Register</h1>
+
+        <script>
+            // This function would be called by backend if errors exist
+            function showErrors(errorsArray) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                Toast.fire({
+                    icon: 'error',
+                    title: errorsArray.join('<br>')
+                });
+            }
+
+            // This function would be called by backend on success
+            function showSuccessAndRedirect(message) {
+                Swal.fire({
+                    icon: 'success',
+                    title: message,
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+
+                // Simulate redirect after 3 seconds
+                setTimeout(() => {
+                    window.location.href = "#"; // Replace with your login page URL, e.g., "/login"
+                }, 3000);
+            }
+
+            // Example of how to trigger these functions (uncomment to test):
+            // showErrors(['Nama wajib diisi.', 'Email tidak valid.']);
+            // showSuccessAndRedirect('Registrasi berhasil! Silakan login.');
+        </script>
+
+        <form action="#" method="POST" onsubmit="event.preventDefault(); showSuccessAndRedirect('Registrasi berhasil!');">
+            <div class="form-columns">
+                <div class="column-left">
+                    <label for="nama">Nama</label>
+                    <input type="text" name="nama" id="nama" required>
+
+                    <label for="nim">NIM</label>
+                    <input type="text" name="nim" id="nim" required>
+
+                    <label for="email">Email</label>
+                    <input type="email" name="email" id="email" required>
+                </div>
+                <div class="column-right">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" required>
+
+                    <label for="password_confirmation">Konfirmasi Password</label>
+                    <input type="password" name="password_confirmation" id="password_confirmation" required placeholder="Konfirmasi password Anda">
+
+                    <label for="role">Role</label>
+                    <select name="role" id="role" required>
+                        <option value="">Pilih Role</option>
+                        <option value="Dosen">Dosen</option>
+                        <option value="Mahasiswa">Mahasiswa</option>
+                        <option value="Sipen">Sipen</option>
+                    </select>
+                </div>
+            </div>
+            <p class="login-prompt">Sudah Punya Akun? <a href="login.html">Login</a></p>
+            <a href="index.html" class="register-button">
+                Register
+            </a>
+        </form>
+    </div>
+</body>
+</html>
